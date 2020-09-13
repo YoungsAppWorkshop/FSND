@@ -139,3 +139,4 @@ cython_debug/
 
 # etc.
 .DS_Store
+Makefile

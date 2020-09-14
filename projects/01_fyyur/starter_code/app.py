@@ -12,6 +12,7 @@ from flask_wtf import Form
 import json
 import logging
 from logging import Formatter, FileHandler
+from sqlalchemy.types import ARRAY
 
 from forms import *
 
@@ -34,13 +35,23 @@ class Venue(db.Model):
     __tablename__ = 'venues'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
-    city = db.Column(db.String(120))
-    state = db.Column(db.String(120))
-    address = db.Column(db.String(120))
-    phone = db.Column(db.String(120))
-    image_link = db.Column(db.String(500))
-    facebook_link = db.Column(db.String(120))
+    name = db.Column(db.String, default='')
+    genres = db.Column(ARRAY(db.String, dimensions=1), default=[])
+    city = db.Column(db.String(120), default='')
+    state = db.Column(db.String(120), default='')
+    address = db.Column(db.String(120), default='')
+    phone = db.Column(db.String(120), default='')
+    image_link = db.Column(db.String(500), default='')
+    facebook_link = db.Column(db.String(120), default='')
+    website = db.Column(db.String(120), default='')
+    seeking_talent = db.Column(db.Boolean, nullable=False, default=False)
+    seeking_description = db.Column(db.String(300), default='')
+
+    # Show
+    # "past_shows": [],
+    # "upcoming_shows": [],
+    # "past_shows_count": 1,
+    # "upcoming_shows_count": 0,
 
     # TODO: implement any missing fields, as a database migration using Flask-Migrate
 
@@ -49,13 +60,22 @@ class Artist(db.Model):
     __tablename__ = 'artists'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
-    city = db.Column(db.String(120))
-    state = db.Column(db.String(120))
-    phone = db.Column(db.String(120))
-    genres = db.Column(db.String(120))
-    image_link = db.Column(db.String(500))
-    facebook_link = db.Column(db.String(120))
+    name = db.Column(db.String, default='')
+    city = db.Column(db.String(120), default='')
+    state = db.Column(db.String(120), default='')
+    phone = db.Column(db.String(120), default='')
+    genres = db.Column(ARRAY(db.String, dimensions=1))
+    image_link = db.Column(db.String(500), default='')
+    website = db.Column(db.String(120), default='')
+    facebook_link = db.Column(db.String(120), default='')
+    seeking_venue = db.Column(db.Boolean, nullable=False, default=False)
+    seeking_description = db.Column(db.String(300), default='')
+
+    # Show
+    # "past_shows": [],
+    # "upcoming_shows": [],
+    # "past_shows_count": 1,
+    # "upcoming_shows_count": 0,
 
     # TODO: implement any missing fields, as a database migration using Flask-Migrate
 

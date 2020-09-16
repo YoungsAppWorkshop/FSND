@@ -1,8 +1,10 @@
 #----------------------------------------------------------------------------#
 # Imports
 #----------------------------------------------------------------------------#
-
+from __future__ import annotations
+from typing import List
 import babel
+from datetime import datetime
 import dateutil.parser
 from flask import Flask, render_template, request, Response, flash, redirect, url_for
 from flask_migrate import Migrate
@@ -47,13 +49,23 @@ class Venue(db.Model):
     seeking_talent = db.Column(db.Boolean, nullable=False, default=False)
     seeking_description = db.Column(db.String(300), default='')
 
-    # Show
-    # "past_shows": [],
-    # "upcoming_shows": [],
-    # "past_shows_count": 1,
-    # "upcoming_shows_count": 0,
+    shows = db.relationship('Show', lazy=True)
 
-    # TODO: implement any missing fields, as a database migration using Flask-Migrate
+    @property
+    def past_shows(self):
+        return [show for show in self.shows if show.start_time < datetime.now()]
+
+    @property
+    def past_shows_count(self):
+        return len(self.past_shows)
+
+    @property
+    def upcoming_shows(self):
+        return [show for show in self.shows if show.start_time >= datetime.now()]
+
+    @property
+    def upcoming_shows_count(self):
+        return len(self.upcoming_shows)
 
 
 class Artist(db.Model):
@@ -71,15 +83,49 @@ class Artist(db.Model):
     seeking_venue = db.Column(db.Boolean, nullable=False, default=False)
     seeking_description = db.Column(db.String(300), default='')
 
-    # Show
-    # "past_shows": [],
-    # "upcoming_shows": [],
-    # "past_shows_count": 1,
-    # "upcoming_shows_count": 0,
+    shows = db.relationship('Show', lazy=True)
 
-    # TODO: implement any missing fields, as a database migration using Flask-Migrate
+    @property
+    def past_shows(self):
+        return [show for show in self.shows if show.start_time < datetime.now()]
 
-# TODO Implement Show and Artist models, and complete all model relationships and properties, as a database migration.
+    @property
+    def past_shows_count(self):
+        return len(self.past_shows)
+
+    @property
+    def upcoming_shows(self):
+        return [show for show in self.shows if show.start_time >= datetime.now()]
+
+    @property
+    def upcoming_shows_count(self):
+        return len(self.upcoming_shows)
+
+
+class Show(db.Model):
+    __tablename__ = 'shows'
+
+    id = db.Column(db.Integer, primary_key=True)
+    venue_id = db.Column(db.Integer, db.ForeignKey(
+        'venues.id'), nullable=False)
+    artist_id = db.Column(db.Integer, db.ForeignKey(
+        'artists.id'), nullable=False)
+    start_time = db.Column(db.DateTime, nullable=False)
+
+    venue = db.relationship('Venue', lazy=True)
+    artist = db.relationship('Artist', lazy=True)
+
+    @property
+    def venue_name(self):
+        return self.venue.name
+
+    @property
+    def artist_name(self):
+        return self.artist.name
+
+    @property
+    def artist_image_link(self):
+        return self.artist.image_link
 
 
 #----------------------------------------------------------------------------#

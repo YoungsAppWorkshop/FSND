@@ -16,6 +16,7 @@ from logging import Formatter, FileHandler
 from sqlalchemy.types import ARRAY
 
 from forms import *
+from helpers import aggregate_venues
 
 
 #----------------------------------------------------------------------------#
@@ -49,6 +50,9 @@ class Venue(db.Model):
     seeking_description = db.Column(db.String(300), default='')
 
     shows = db.relationship('Show', lazy=True)
+
+    def __getitem__(self, key):
+        return getattr(self, key)
 
     @staticmethod
     def from_dict(form):
@@ -224,29 +228,13 @@ def index():
 #  ----------------------------------------------------------------
 @app.route('/venues')
 def venues():
-    # TODO: replace with real venues data.
-    #       num_shows should be aggregated based on number of upcoming shows per venue.
-    data = [{
-        "city": "San Francisco",
-        "state": "CA",
-        "venues": [{
-            "id": 1,
-            "name": "The Musical Hop",
-            "num_upcoming_shows": 0,
-        }, {
-            "id": 3,
-            "name": "Park Square Live Music & Coffee",
-            "num_upcoming_shows": 1,
-        }]
-    }, {
-        "city": "New York",
-        "state": "NY",
-        "venues": [{
-            "id": 2,
-            "name": "The Dueling Pianos Bar",
-            "num_upcoming_shows": 0,
-        }]
-    }]
+    try:
+        venues = Venue.query.all()
+        data = aggregate_venues(venues)
+    except:
+        abort(500)
+    finally:
+        db.session.close()
     return render_template('pages/venues.html', areas=data)
 
 

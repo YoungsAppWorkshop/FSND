@@ -12,7 +12,6 @@ from flask import Flask, render_template, request, Response, flash, redirect, ur
 from flask_migrate import Migrate
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
-from flask_wtf import Form
 from logging import Formatter, FileHandler
 from sqlalchemy.types import ARRAY
 
@@ -50,6 +49,22 @@ class Venue(db.Model):
     seeking_description = db.Column(db.String(300), default='')
 
     shows = db.relationship('Show', lazy=True)
+
+    @staticmethod
+    def from_dict(form):
+        return Venue(
+            name=form.get('name'),
+            genres=form.get('genres'),
+            city=form.get('city'),
+            state=form.get('state'),
+            address=form.get('address'),
+            phone=form.get('phone'),
+            image_link=form.get('image_link'),
+            facebook_link=form.get('facebook_link'),
+            website=form.get('website'),
+            seeking_talent=form.get('seeking_talent'),
+            seeking_description=form.get('seeking_description')
+        )
 
     @property
     def past_shows(self):
@@ -273,14 +288,20 @@ def create_venue_form():
 
 @app.route('/venues/create', methods=['POST'])
 def create_venue_submission():
-    # TODO: insert form data as a new Venue record in the db, instead
-    # TODO: modify data to be the data object returned from db insertion
+    form = VenueForm()
+    new_venue = Venue.from_dict(form.data)
 
-    # on successful db insert, flash success
-    flash('Venue ' + request.form['name'] + ' was successfully listed!')
-    # TODO: on unsuccessful db insert, flash an error instead.
-    # e.g., flash('An error occurred. Venue ' + data.name + ' could not be listed.')
-    # see: http://flask.pocoo.org/docs/1.0/patterns/flashing/
+    try:
+        db.session.add(new_venue)
+        db.session.commit()
+        flash(f'Venue {new_venue.name} was successfully listed!')
+    except:
+        flash(
+            f'An error occurred. Venue {new_venue.name} could not be listed.', 'error'
+        )
+        abort(500)
+    finally:
+        db.session.close()
     return render_template('pages/home.html')
 
 

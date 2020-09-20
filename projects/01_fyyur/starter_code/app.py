@@ -140,12 +140,11 @@ class Artist(db.Model):
             genres=form.get('genres'),
             city=form.get('city'),
             state=form.get('state'),
-            address=form.get('address'),
             phone=form.get('phone'),
             image_link=form.get('image_link'),
             facebook_link=form.get('facebook_link'),
             website=form.get('website'),
-            seeking_talent=form.get('seeking_talent'),
+            seeking_venue=form.get('seeking_venue'),
             seeking_description=form.get('seeking_description')
         )
 
@@ -474,14 +473,22 @@ def create_artist_form():
 
 @app.route('/artists/create', methods=['POST'])
 def create_artist_submission():
-    # called upon submitting the new artist listing form
-    # TODO: insert form data as a new Venue record in the db, instead
-    # TODO: modify data to be the data object returned from db insertion
+    form = ArtistForm()
+    if not form.validate_on_submit():
+        flash(f'An error occurred. Artist could not be listed.', 'error')
+        return render_template('pages/home.html')
 
-    # on successful db insert, flash success
-    flash('Artist ' + request.form['name'] + ' was successfully listed!')
-    # TODO: on unsuccessful db insert, flash an error instead.
-    # e.g., flash('An error occurred. Artist ' + data.name + ' could not be listed.')
+    try:
+        new_artist = Artist.from_dict(form.data)
+        db.session.add(new_artist)
+        db.session.commit()
+        flash(f'Artist {new_artist.name} was successfully listed!')
+    except Exception as e:
+        print(e)
+        abort(500)
+    finally:
+        db.session.close()
+
     return render_template('pages/home.html')
 
 

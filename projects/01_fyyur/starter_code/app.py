@@ -317,6 +317,7 @@ def create_venue_submission():
         db.session.commit()
         flash(f'Venue {new_venue.name} was successfully listed!')
     except:
+        db.session.rollback()
         abort(500)
     finally:
         db.session.close()
@@ -421,6 +422,7 @@ def edit_artist_submission(artist_id):
         db.session.commit()
         flash(f'Artist {artist.name} was successfully updated!')
     except:
+        db.session.rollback()
         abort(500)
     finally:
         db.session.close()
@@ -464,6 +466,7 @@ def edit_venue_submission(venue_id):
         db.session.commit()
         flash(f'Venue {venue.name} was successfully updated!')
     except:
+        db.session.rollback()
         abort(500)
     finally:
         db.session.close()

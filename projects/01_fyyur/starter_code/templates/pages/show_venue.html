@@ -42,6 +42,7 @@
 		</p>
 		{% endif %}
 		<div style="margin-top: 20px;">
+			<button type="button" class="btn btn-secondary" id="edit-button" data-id="{{ venue.id }}">Edit</button>
 			<button type="button" class="btn btn-secondary" id="delete-button" data-id="{{ venue.id }}">Delete</button>
 		</div>
 	</div>
@@ -91,6 +92,11 @@
 				window.location.href = '/'
 			}
         });
+	}
+	const editButton = document.getElementById('edit-button')
+	editButton.onclick =  (event) => {
+		const id = event.target.dataset['id'];
+		window.location.href = `/venues/${id}/edit`
 	}
 </script>
 

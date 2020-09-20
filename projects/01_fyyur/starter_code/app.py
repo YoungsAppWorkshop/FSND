@@ -204,6 +204,14 @@ class Show(db.Model):
     venue = db.relationship('Venue', lazy=True)
     artist = db.relationship('Artist', lazy=True)
 
+    @classmethod
+    def from_dict(cls, form):
+        return cls(
+            artist_id=form.get('artist_id'),
+            venue_id=form.get('venue_id'),
+            start_time=form.get('start_time'),
+        )
+
     @property
     def serialize(self):
         """ Return object data in easily serializeable format"""
@@ -515,14 +523,23 @@ def create_shows():
 
 @app.route('/shows/create', methods=['POST'])
 def create_show_submission():
-    # called to create new shows in the db, upon submitting new show listing form
-    # TODO: insert form data as a new Show record in the db, instead
+    form = ShowForm()
+    if not form.validate_on_submit():
+        flash(f'An error occurred. Show could not be listed.', 'error')
+        return render_template('pages/home.html')
 
-    # on successful db insert, flash success
-    flash('Show was successfully listed!')
-    # TODO: on unsuccessful db insert, flash an error instead.
-    # e.g., flash('An error occurred. Show could not be listed.')
-    # see: http://flask.pocoo.org/docs/1.0/patterns/flashing/
+    try:
+        new_show = Show.from_dict(form.data)
+        print(new_show.id)
+        db.session.add(new_show)
+        db.session.commit()
+        flash('Show was successfully listed!')
+    except Exception as e:
+        print(e)
+        flash('An error occurred. Show could not be listed.')
+    finally:
+        db.session.close()
+
     return render_template('pages/home.html')
 
 

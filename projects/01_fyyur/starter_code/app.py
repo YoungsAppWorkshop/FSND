@@ -18,7 +18,7 @@ from flask_sqlalchemy import SQLAlchemy
 from logging import Formatter, FileHandler
 from sqlalchemy.types import ARRAY
 
-from forms import *
+from forms import ArtistForm, VenueForm, ShowForm
 from helpers import aggregate_venues
 
 
@@ -57,9 +57,9 @@ class Venue(db.Model):
     def __getitem__(self, key):
         return getattr(self, key)
 
-    @staticmethod
-    def from_dict(form):
-        return Venue(
+    @classmethod
+    def from_dict(cls, form):
+        return cls(
             name=form.get('name'),
             genres=form.get('genres'),
             city=form.get('city'),
@@ -132,6 +132,22 @@ class Artist(db.Model):
     seeking_description = db.Column(db.String(300), default='')
 
     shows = db.relationship('Show', lazy=True)
+
+    @classmethod
+    def from_dict(cls, form):
+        return cls(
+            name=form.get('name'),
+            genres=form.get('genres'),
+            city=form.get('city'),
+            state=form.get('state'),
+            address=form.get('address'),
+            phone=form.get('phone'),
+            image_link=form.get('image_link'),
+            facebook_link=form.get('facebook_link'),
+            website=form.get('website'),
+            seeking_talent=form.get('seeking_talent'),
+            seeking_description=form.get('seeking_description')
+        )
 
     @property
     def past_shows(self):
@@ -284,16 +300,16 @@ def create_venue_form():
 @app.route('/venues/create', methods=['POST'])
 def create_venue_submission():
     form = VenueForm()
-    new_venue = Venue.from_dict(form.data)
+    if not form.validate_on_submit():
+        flash(f'An error occurred. Venue could not be listed.', 'error')
+        return render_template('pages/home.html')
 
     try:
+        new_venue = Venue.from_dict(form.data)
         db.session.add(new_venue)
         db.session.commit()
         flash(f'Venue {new_venue.name} was successfully listed!')
     except:
-        flash(
-            f'An error occurred. Venue {new_venue.name} could not be listed.', 'error'
-        )
         abort(500)
     finally:
         db.session.close()
@@ -385,8 +401,22 @@ def edit_artist(artist_id):
 
 @app.route('/artists/<int:artist_id>/edit', methods=['POST'])
 def edit_artist_submission(artist_id):
-    # TODO: take values from the form submitted, and update existing
-    # artist record with ID <artist_id> using the new attributes
+    form = ArtistForm()
+    if not form.validate_on_submit():
+        flash(f'An error occurred. Artist could not be updated.', 'error')
+        return redirect(url_for('show_artist', artist_id=artist_id))
+
+    try:
+        artist = Artist.query.get(artist_id)
+        for key in form.data:
+            if form.data.get(key) is not None:
+                setattr(artist, key, form.data.get(key))
+        db.session.commit()
+        flash(f'Artist {artist.name} was successfully updated!')
+    except:
+        abort(500)
+    finally:
+        db.session.close()
 
     return redirect(url_for('show_artist', artist_id=artist_id))
 

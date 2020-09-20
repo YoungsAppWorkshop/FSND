@@ -33,11 +33,15 @@
 				<i class="fas fa-quote-left"></i> {{ artist.seeking_description }} <i class="fas fa-quote-right"></i>
 			</div>
 		</div>
-		{% else %}	
+		{% else %}
 		<p class="not-seeking">
 			<i class="fas fa-moon"></i> Not currently seeking performance venues
 		</p>
 		{% endif %}
+		<div style="margin-top: 20px;">
+			<button type="button" class="btn btn-secondary" id="edit-button" data-id="{{ artist.id }}">Edit</button>
+			<button type="button" class="btn btn-secondary" id="delete-button" data-id="{{ artist.id }}">Delete</button>
+		</div>
 	</div>
 	<div class="col-sm-6">
 		<img src="{{ artist.image_link }}" alt="Venue Image" />
@@ -72,5 +76,12 @@
 	</div>
 </section>
 
-{% endblock %}
+<script>
+	const editButton = document.getElementById('edit-button')
+	editButton.onclick =  (event) => {
+		const id = event.target.dataset['id'];
+		window.location.href = `/artists/${id}/edit`
+	}
+</script>
 
+{% endblock %}

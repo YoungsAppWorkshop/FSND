@@ -1,29 +1,42 @@
 from datetime import datetime
+from enum import Enum
 from flask_wtf import FlaskForm
 from wtforms import StringField, SelectField, SelectMultipleField, DateTimeField
-from wtforms.validators import AnyOf, DataRequired, Regexp, URL
+from wtforms.validators import AnyOf, DataRequired, Optional, Regexp, URL
 
-GENRE_CHOICES = [
-    ('Alternative', 'Alternative'),
-    ('Blues', 'Blues'),
-    ('Classical', 'Classical'),
-    ('Country', 'Country'),
-    ('Electronic', 'Electronic'),
-    ('Folk', 'Folk'),
-    ('Funk', 'Funk'),
-    ('Hip-Hop', 'Hip-Hop'),
-    ('Heavy Metal', 'Heavy Metal'),
-    ('Instrumental', 'Instrumental'),
-    ('Jazz', 'Jazz'),
-    ('Musical Theatre', 'Musical Theatre'),
-    ('Pop', 'Pop'),
-    ('Punk', 'Punk'),
-    ('R&B', 'R&B'),
-    ('Reggae', 'Reggae'),
-    ('Rock n Roll', 'Rock n Roll'),
-    ('Soul', 'Soul'),
-    ('Other', 'Other'),
-]
+PHONE_NUMBER_REGEX = '^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$'
+
+
+class Genre(Enum):
+    ALTERNATIVE = 'Alternative'
+    BLUES = 'Blues'
+    CLASSICAL = 'Classical'
+    COUNTRY = 'Country'
+    ELECTRONIC = 'Electronic'
+    FOLK = 'Folk'
+    FUNK = 'Funk'
+    HIP_HOP = 'Hip-Hop'
+    HEAVY_METAL = 'Heavy Metal'
+    INSTRUMENTAL = 'Instrumental'
+    JAZZ = 'Jazz'
+    MUSICAL_THEATRE = 'Musical Theatre'
+    POP = 'Pop'
+    PUNK = 'Punk'
+    R_N_B = 'R&B'
+    REGGAE = 'Reggae'
+    ROCK_N_ROLL = 'Rock n Roll'
+    SOUL = 'Soul'
+    OTHER = 'Other'
+
+    @classmethod
+    def generate_options(cls):
+        return [(g.value, g.value) for g in cls]
+
+    @classmethod
+    def validate(cls, form, field):
+        return set(field.data).issubset(set([g.value for g in cls]))
+
+
 STATE_CHOICES = [
     ('AL', 'AL'),
     ('AK', 'AK'),
@@ -95,63 +108,76 @@ class ShowForm(FlaskForm):
 
 class VenueForm(FlaskForm):
     name = StringField(
-        'name', validators=[DataRequired()]
+        'name',
+        validators=[DataRequired()]
     )
     city = StringField(
-        'city', validators=[DataRequired()]
+        'city',
+        validators=[DataRequired()]
     )
     state = SelectField(
         'state',
-        validators=[DataRequired(), AnyOf(STATE_CHOICES)],
+        validators=[AnyOf(values=[c[0] for c in STATE_CHOICES])],
         choices=STATE_CHOICES
     )
     address = StringField(
-        'address', validators=[DataRequired()]
+        'address',
+        validators=[DataRequired()]
     )
     phone = StringField(
         'phone',
-        validators=[DataRequired(), Regexp(
-            '^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$')]
+        validators=[
+            Regexp(PHONE_NUMBER_REGEX, message='Invalid phone number'),
+            Optional()
+        ]
     )
     image_link = StringField(
         'image_link'
     )
     genres = SelectMultipleField(
         'genres',
-        validators=[DataRequired(), AnyOf(GENRE_CHOICES)],
-        choices=GENRE_CHOICES
+        choices=Genre.generate_options(),
+        validators=[Genre.validate, DataRequired()]
     )
     facebook_link = StringField(
         'facebook_link',
-        validators=[URL()]
+        validators=[URL(), Optional()]
     )
 
 
 class ArtistForm(FlaskForm):
     name = StringField(
-        'name', validators=[DataRequired()]
+        'name',
+        validators=[DataRequired()]
     )
     city = StringField(
-        'city', validators=[DataRequired()]
+        'city',
+        validators=[DataRequired()]
     )
     state = SelectField(
-        'state', validators=[AnyOf(STATE_CHOICES)],
+        'state',
+        validators=[AnyOf(values=[c[0] for c in STATE_CHOICES])],
         choices=STATE_CHOICES
     )
     phone = StringField(
         'phone',
-        validators=[DataRequired(), Regexp(
-            '^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$')]
+        validators=[
+            Regexp(PHONE_NUMBER_REGEX, message='Invalid phone number'),
+            Optional()
+        ]
     )
     image_link = StringField(
-        'image_link', validators=[URL()]
+        'image_link',
+        validators=[URL(), Optional()]
     )
     genres = SelectMultipleField(
-        'genres', validators=[DataRequired(), AnyOf(GENRE_CHOICES)],
-        choices=GENRE_CHOICES
+        'genres',
+        choices=Genre.generate_options(),
+        validators=[Genre.validate, DataRequired()]
     )
     facebook_link = StringField(
-        'facebook_link', validators=[URL()]
+        'facebook_link',
+        validators=[URL(), Optional()]
     )
 
 # TODO IMPLEMENT NEW ARTIST FORM AND NEW SHOW FORM

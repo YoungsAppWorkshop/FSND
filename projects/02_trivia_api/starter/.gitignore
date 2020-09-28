@@ -1,6 +1,18 @@
-.vscode
-__pycache__
-venv
+.vscode/
+__pycache__/
+.venv/
+node_modules/
+
+*.pyc
+instance/
+
+.pytest_cache/
+.coverage
+htmlcov/
+
+dist/
+build/
+*.egg-info/
 
 # OS generated files #
 ######################

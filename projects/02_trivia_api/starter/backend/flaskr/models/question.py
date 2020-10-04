@@ -1,23 +1,6 @@
-import os
-from sqlalchemy import Column, String, Integer, create_engine
-from flask_sqlalchemy import SQLAlchemy
-import json
+from sqlalchemy import Column, String, Integer
 
-database_name = "trivia"
-database_path = "postgres://{}/{}".format('localhost:5432', database_name)
-
-db = SQLAlchemy()
-
-
-def setup_db(app, database_path=database_path):
-    '''setup_db(app)
-        binds a flask application and a SQLAlchemy service
-    '''
-    app.config["SQLALCHEMY_DATABASE_URI"] = database_path
-    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-    db.app = app
-    db.init_app(app)
-    db.create_all()
+from ..setup_db import db
 
 
 class Question(db.Model):
@@ -54,21 +37,4 @@ class Question(db.Model):
             'answer': self.answer,
             'category': self.category,
             'difficulty': self.difficulty
-        }
-
-
-class Category(db.Model):
-    '''Category'''
-    __tablename__ = 'categories'
-
-    id = Column(Integer, primary_key=True)
-    type = Column(String)
-
-    def __init__(self, type):
-        self.type = type
-
-    def format(self):
-        return {
-            'id': self.id,
-            'type': self.type
         }

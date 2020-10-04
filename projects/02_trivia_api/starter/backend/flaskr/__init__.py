@@ -2,6 +2,7 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 
 from .setup_db import setup_db
+from .utils import generate_response
 
 
 def create_app(test_config=None):
@@ -25,19 +26,11 @@ def create_app(test_config=None):
     # Error Handlers
     @app.errorhandler(422)
     def unprocessable(error):
-        return jsonify({
-            'status': 422,
-            'message': 'Unprocessable Entity',
-            'data': {},
-        }), 422
+        return generate_response(422, 'Unprocessable Entity')
 
     @app.errorhandler(500)
     def internal_server_error(error):
-        return jsonify({
-            'status': 500,
-            'message': 'Internal Server Error',
-            'data': {},
-        }), 500
+        return generate_response(500, 'Internal Server Error')
 
     # Register Blueprints
     from .blueprints import category, question

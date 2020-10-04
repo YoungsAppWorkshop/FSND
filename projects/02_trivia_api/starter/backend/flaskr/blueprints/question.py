@@ -4,7 +4,7 @@ from flaskr.models.exceptions import ParamsOutOfRange
 from ..constants import QUESTIONS_PER_PAGE
 from ..models import Category, Question
 from ..setup_db import db
-from ..utils.aggregate_categories import aggregate_categories
+from ..utils import aggregate_categories, generate_response
 
 bp = Blueprint("question", __name__)
 
@@ -29,14 +29,10 @@ def questions():
         if start > len(questions):
             raise ParamsOutOfRange
 
-        res = {
-            'status': 200,
-            'message': 'OK',
-            'data': {
-                'questions': [q.format for q in questions[start:end]],
-                'total_questions': len(questions),
-                'categories': aggregate_categories(categories)
-            }
+        data = {
+            'questions': [q.format for q in questions[start:end]],
+            'total_questions': len(questions),
+            'categories': aggregate_categories(categories)
         }
     except ParamsOutOfRange:
         abort(422)
@@ -44,7 +40,7 @@ def questions():
         abort(500)
     finally:
         db.session.close()
-    return jsonify(res)
+    return generate_response(data=data)
 
 
 '''

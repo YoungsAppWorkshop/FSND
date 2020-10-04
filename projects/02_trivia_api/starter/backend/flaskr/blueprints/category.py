@@ -1,7 +1,7 @@
 from flask import abort, Blueprint, jsonify
 
 from ..models import Category
-from ..utils import aggregate_categories
+from ..utils import aggregate_categories, generate_response
 from ..setup_db import db
 
 bp = Blueprint("category", __name__)
@@ -18,14 +18,9 @@ def categories():
         - Returns: An object with a single key, categories, that contains a object of id: category_string key:value pairs.
     '''
     try:
-        categories = Category.query.all()
-        res = {
-            'status': 200,
-            'message': 'OK',
-            'data': aggregate_categories(categories)
-        }
+        data = aggregate_categories(Category.query.all())
     except:
         abort(500)
     finally:
         db.session.close()
-    return jsonify(res)
+    return generate_response(data=data)

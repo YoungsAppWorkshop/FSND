@@ -23,14 +23,8 @@ def create_app(test_config=None):
     @TODO: Use the after_request decorator to set Access-Control-Allow
     '''
 
-    '''
-    @TODO:
-    Create an endpoint to handle GET requests
-    for all available categories.
-    '''
-    @app.route('/categories')
-    def categories():
-        return jsonify({'status': 'success'}), 200
+    from .blueprints import category
+    app.register_blueprint(category.bp)
 
     '''
   @TODO:

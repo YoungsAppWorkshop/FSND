@@ -96,4 +96,12 @@ def create_app(test_config=None):
   including 404 and 422.
   '''
 
+    @app.errorhandler(500)
+    def server_error(error):
+        return jsonify({
+            'status': 500,
+            'message': 'Internal Server Error',
+            'data': {},
+        })
+
     return app

@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify
+from flask import abort, Blueprint, jsonify
 
 from ..models import Category
 from ..utils import aggregate_categories
@@ -25,7 +25,7 @@ def categories():
             'data': aggregate_categories(categories)
         }
     except:
-        res = {}
+        abort(500)
     finally:
         db.session.close()
     return jsonify(res)

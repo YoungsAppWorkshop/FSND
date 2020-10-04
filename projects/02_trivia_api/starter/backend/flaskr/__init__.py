@@ -3,8 +3,6 @@ from flask_cors import CORS
 
 from .setup_db import setup_db
 
-QUESTIONS_PER_PAGE = 10
-
 
 def create_app(test_config=None):
     # Create and configure the app
@@ -25,16 +23,25 @@ def create_app(test_config=None):
         return response
 
     # Error Handlers
+    @app.errorhandler(422)
+    def unprocessable(error):
+        return jsonify({
+            'status': 422,
+            'message': 'Unprocessable Entity',
+            'data': {},
+        }), 422
+
     @app.errorhandler(500)
-    def server_error(error):
+    def internal_server_error(error):
         return jsonify({
             'status': 500,
             'message': 'Internal Server Error',
             'data': {},
-        })
+        }), 500
 
     # Register Blueprints
-    from .blueprints import category
+    from .blueprints import category, question
     app.register_blueprint(category.bp)
+    app.register_blueprint(question.bp)
 
     return app

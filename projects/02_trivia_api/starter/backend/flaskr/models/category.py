@@ -13,6 +13,7 @@ class Category(db.Model):
     def __init__(self, type):
         self.type = type
 
+    @property
     def format(self):
         return {
             'id': self.id,

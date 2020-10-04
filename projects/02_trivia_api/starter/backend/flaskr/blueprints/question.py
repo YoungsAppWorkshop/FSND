@@ -1,3 +1,52 @@
+from flask import abort, Blueprint, jsonify, request
+from flaskr.models.exceptions import ParamsOutOfRange
+
+from ..constants import QUESTIONS_PER_PAGE
+from ..models import Category, Question
+from ..setup_db import db
+from ..utils.aggregate_categories import aggregate_categories
+
+bp = Blueprint("question", __name__)
+
+
+@bp.route("/questions")
+def questions():
+    '''
+    Endpoint to handle GET requests for questions
+
+    GET '/questions'
+        - Request Arguments: page
+        - Returns: List of questions, Number of questions and Categories
+    '''
+    page = request.args.get('page', 1, type=int)
+    start = (page - 1) * QUESTIONS_PER_PAGE
+    end = start + QUESTIONS_PER_PAGE
+
+    try:
+        categories = Category.query.all()
+        questions = Question.query.all()
+
+        if start > len(questions):
+            raise ParamsOutOfRange
+
+        res = {
+            'status': 200,
+            'message': 'OK',
+            'data': {
+                'questions': [q.format for q in questions[start:end]],
+                'total_questions': len(questions),
+                'categories': aggregate_categories(categories)
+            }
+        }
+    except ParamsOutOfRange:
+        abort(422)
+    except:
+        abort(500)
+    finally:
+        db.session.close()
+    return jsonify(res)
+
+
 '''
 @TODO:
 Create an endpoint to handle GET requests for questions,

@@ -1,0 +1,2 @@
+class ParamsOutOfRange(Exception):
+    pass

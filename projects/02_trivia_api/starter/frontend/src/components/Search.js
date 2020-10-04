@@ -6,13 +6,13 @@ class Search extends Component {
   }
 
   getInfo = (event) => {
-    event.preventDefault();
+    event.preventDefault()
     this.props.submitSearch(this.state.query)
   }
 
   handleInputChange = () => {
     this.setState({
-      query: this.search.value
+      query: this.search.value,
     })
   }
 
@@ -20,11 +20,11 @@ class Search extends Component {
     return (
       <form onSubmit={this.getInfo}>
         <input
-          placeholder="Search questions..."
-          ref={input => this.search = input}
+          placeholder='Search questions...'
+          ref={(input) => (this.search = input)}
           onChange={this.handleInputChange}
         />
-        <input type="submit" value="Submit" className="button"/>
+        <input type='submit' value='Submit' className='button' />
       </form>
     )
   }

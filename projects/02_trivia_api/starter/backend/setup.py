@@ -18,6 +18,7 @@ setup(
         'Jinja2',
         'MarkupSafe',
         'psycopg2-binary',
+        'pytest',
         'pytz',
         'six',
         'SQLAlchemy',

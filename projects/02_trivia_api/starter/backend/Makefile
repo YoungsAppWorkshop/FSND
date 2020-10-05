@@ -6,7 +6,7 @@ debug:
 	flask run
 
 test:
-	python tests/test_flaskr.py
+	pytest
 
 reset:
 	dropdb trivia_test

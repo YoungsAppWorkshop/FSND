@@ -1,6 +1,7 @@
 import json
 
 from flaskr.constants import QUESTIONS_PER_PAGE
+from flaskr.models import Question
 from tests.test_flaskr import TriviaTestCase
 
 
@@ -37,6 +38,34 @@ class QuestionTestCase(TriviaTestCase):
         : GET /questions?page=3
         """
         res = self.client().get('/questions?page=3')
+
+        payload = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 422)
+        self.assertEqual(payload['message'], 'Unprocessable Entity')
+
+    def test_delete_question(self):
+        """
+        Test handling DELETE question request for an existing question properly
+        : DELETE /questions/<int:id>
+        """
+        EXISTING_QUESTION_ID = 2
+        res = self.client().delete(f'/questions/{EXISTING_QUESTION_ID}')
+
+        payload = json.loads(res.data)
+        question = Question.query.get(EXISTING_QUESTION_ID)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(payload['data']['id'], EXISTING_QUESTION_ID)
+        self.assertEqual(question, None)
+
+    def test_delete_non_existing_question(self):
+        """
+        Test handling DELETE question request for a non-existing question
+        : DELETE /questions/<int:id>
+        """
+        NON_EXISTING_QUESTION_ID = 1
+        res = self.client().delete(f'/questions/{NON_EXISTING_QUESTION_ID}')
 
         payload = json.loads(res.data)
 

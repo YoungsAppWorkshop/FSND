@@ -5,10 +5,10 @@ FLASK_ENV=development
 debug:
 	flask run
 
-test:
-	pytest
-
 reset:
 	dropdb trivia_test
 	createdb trivia_test
-	psql trivia_test < trivia.psql
+	psql trivia_test < flaskr/trivia.psql
+
+test: reset
+	pytest

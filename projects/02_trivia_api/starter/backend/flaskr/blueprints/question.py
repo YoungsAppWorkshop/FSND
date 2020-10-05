@@ -43,26 +43,29 @@ def questions():
     return generate_response(data=data)
 
 
-'''
-@TODO:
-Create an endpoint to handle GET requests for questions,
-including pagination (every 10 questions).
-This endpoint should return a list of questions,
-number of total questions, current category, categories.
+@bp.route("/questions/<int:question_id>", methods=['DELETE'])
+def delete_question(question_id):
+    '''
+    Endpoint to DELETE a question using a question ID
 
-TEST: At this point, when you start the application
-you should see questions and categories generated,
-ten questions per page and pagination at the bottom of the screen for three pages.
-Clicking on the page numbers should update the questions.
-'''
+    DELETE '/questions/<int:question_id>'
+        - Request Arguments: A question ID
+        - Returns: Question ID of the deleted question
+    '''
+    try:
+        Question.query.get(question_id).delete()
+        db.session.commit()
+        data = {'id': question_id}
+    except AttributeError:
+        db.session.rollback()
+        abort(422)
+    except:
+        db.session.rollback()
+        abort(500)
+    finally:
+        db.session.close()
+    return generate_response(data=data)
 
-'''
-@TODO:
-Create an endpoint to DELETE question using a question ID.
-
-TEST: When you click the trash icon next to a question, the question will be removed.
-This removal will persist in the database and when you refresh the page.
-'''
 
 '''
 @TODO:

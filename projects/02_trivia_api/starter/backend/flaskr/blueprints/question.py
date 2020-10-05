@@ -1,4 +1,4 @@
-from flask import abort, Blueprint, jsonify, request
+from flask import abort, Blueprint, request
 from flaskr.models.exceptions import ParamsOutOfRange
 
 from ..constants import QUESTIONS_PER_PAGE
@@ -11,11 +11,8 @@ bp = Blueprint("question", __name__)
 
 @bp.route("/questions")
 def questions():
-    '''
-    Endpoint to handle GET requests for questions
-
-    GET '/questions'
-        - Request Arguments: page
+    '''Endpoint to handle GET requests for fetching questions
+        - Request Arguments: Page number
         - Returns: List of questions, Number of questions and Categories
     '''
     page = request.args.get('page', 1, type=int)
@@ -45,10 +42,7 @@ def questions():
 
 @bp.route("/questions/<int:question_id>", methods=['DELETE'])
 def delete_question(question_id):
-    '''
-    Endpoint to DELETE a question using a question ID
-
-    DELETE '/questions/<int:question_id>'
+    '''Endpoint to DELETE a question using a question ID
         - Request Arguments: A question ID
         - Returns: Question ID of the deleted question
     '''

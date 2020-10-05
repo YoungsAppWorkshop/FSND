@@ -5,9 +5,8 @@ from tests.test_flaskr import TriviaTestCase
 
 class CategoryTestCase(TriviaTestCase):
     def test_fetch_categories(self):
-        """
-        Test handling GET requests for all available categories
-        : GET /categories
+        """Test handling GET requests for all available categories
+            : GET /categories
         """
         res = self.client().get('/categories')
 

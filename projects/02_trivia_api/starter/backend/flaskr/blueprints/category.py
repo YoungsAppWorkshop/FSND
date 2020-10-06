@@ -17,7 +17,7 @@ def categories():
           object of id: category_string key:value pairs.
     '''
     try:
-        data = aggregate_categories(Category.query.all())
+        data = {'categories': aggregate_categories(Category.query.all())}
     except:
         abort(500)
     finally:

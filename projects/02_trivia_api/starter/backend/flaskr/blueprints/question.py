@@ -12,7 +12,7 @@ bp = Blueprint("question", __name__)
 @bp.route("/questions")
 def questions():
     '''Endpoint to handle GET requests for fetching questions
-        - Request Arguments: Page number
+        - Query Params: page
         - Returns: List of questions, Number of questions and Categories
     '''
     page = request.args.get('page', 1, type=int)
@@ -61,6 +61,37 @@ def delete_question(question_id):
     return generate_response(data=data)
 
 
+@bp.route("/categories/<int:category_id>/questions")
+def questions_by_category(category_id):
+    '''GET endpoint to get questions based on category
+        - Request Arguments: category_id
+        - Query Params: page
+        - Returns: List of questions, Number of questions and category
+    '''
+    page = request.args.get('page', 1, type=int)
+    start = (page - 1) * QUESTIONS_PER_PAGE
+    end = start + QUESTIONS_PER_PAGE
+
+    try:
+        questions = Question.query.filter_by(category=category_id).all()
+
+        if start > len(questions):
+            raise ParamsOutOfRange
+
+        data = {
+            'questions': [q.format for q in questions[start:end]],
+            'total_questions': len(questions),
+            'current_category': category_id
+        }
+    except ParamsOutOfRange:
+        abort(422)
+    except:
+        abort(500)
+    finally:
+        db.session.close()
+    return generate_response(data=data)
+
+
 '''
 @TODO:
 Create an endpoint to POST a new question,
@@ -83,14 +114,6 @@ only question that include that string within their question.
 Try using the word "title" to start.
 '''
 
-'''
-@TODO:
-Create a GET endpoint to get questions based on category.
-
-TEST: In the "List" tab / main screen, clicking on one of the
-categories in the left column will cause only questions of that
-category to be shown.
-'''
 
 '''
 @TODO:

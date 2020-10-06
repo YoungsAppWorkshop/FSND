@@ -21,7 +21,7 @@ class FormView extends Component {
       url: `${API_URL}/categories`,
       type: 'GET',
       success: (result) => {
-        this.setState({ categories: result.categories })
+        this.setState({ categories: result.data.categories })
         return
       },
       error: (error) => {

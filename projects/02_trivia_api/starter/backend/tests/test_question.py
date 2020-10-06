@@ -68,3 +68,30 @@ class QuestionTestCase(TriviaTestCase):
 
         self.assertEqual(res.status_code, 422)
         self.assertEqual(payload['message'], 'Unprocessable Entity')
+
+    def test_fetch_questions_by_category(self):
+        """Test handling GET requests for questions of a category
+            : GET /categories/<int:category_id>/questions
+        """
+        CATEGORY_ID = 1
+        res = self.client().get(f'/categories/{CATEGORY_ID}/questions')
+
+        payload = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(payload['message'], 'OK')
+
+    def test_fetch_questions_by_category_with_invalid_page_number(self):
+        """Test handling GET requests for questions of a category with an
+        invalid parameter
+            : GET /categories/<int:category_id>/questions?page=999
+        """
+        INVALID_PAGE_NUMBER = 999
+        CATEGORY_ID = 1
+        res = self.client().get(
+            f'/categories/{CATEGORY_ID}/questions?page={INVALID_PAGE_NUMBER}')
+
+        payload = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 422)
+        self.assertEqual(payload['message'], 'Unprocessable Entity')

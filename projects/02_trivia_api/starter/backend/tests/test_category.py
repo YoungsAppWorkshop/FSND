@@ -12,16 +12,18 @@ class CategoryTestCase(TriviaTestCase):
 
         payload = json.loads(res.data)
         expected = {
-            'status': 200,
-            'message': 'OK',
             'data': {
-                '1': "Science",
-                '2': "Art",
-                '3': "Geography",
-                '4': "History",
-                '5': "Entertainment",
-                '6': "Sports",
+                'categories': {
+                    '1': "Science",
+                    '2': "Art",
+                    '3': "Geography",
+                    '4': "History",
+                    '5': "Entertainment",
+                    '6': "Sports",
+                },
             },
+            'message': 'OK',
+            'status': 200,
         }
 
         self.assertEqual(res.status_code, 200)

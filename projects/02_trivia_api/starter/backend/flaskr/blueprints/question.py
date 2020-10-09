@@ -110,24 +110,13 @@ def add_a_new_question():
         db.session.commit()
         data = {'question': QuestionSchema().dump(new_question)}
     except ValidationError:
-        abort(422)
+        abort(400)
     except:
         abort(500)
     finally:
         db.session.close()
     return generate_response(data=data, status=201)
 
-
-'''
-@TODO:
-Create an endpoint to POST a new question,
-which will require the question and answer text,
-category, and difficulty score.
-
-TEST: When you submit a question on the "Add" tab,
-the form will clear and the question will appear at the end of the last page
-of the questions list in the "List" tab.
-'''
 
 '''
 @TODO:

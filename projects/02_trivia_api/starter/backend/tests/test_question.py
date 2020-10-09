@@ -108,3 +108,14 @@ class QuestionTestCase(TriviaTestCase):
         ))
 
         self.assertEqual(res.status_code, 201)
+
+    def test_try_to_add_a_question_with_wrong_parameters(self):
+        """Test to add a new question with wrong params
+            :POST /questions
+        """
+        res = self.client().post('/questions', json=dict(
+            wrong='This is a Test Question. Is it working?',
+            params='No, it isnt.',
+        ))
+
+        self.assertEqual(res.status_code, 400)

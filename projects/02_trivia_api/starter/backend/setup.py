@@ -17,6 +17,7 @@ setup(
         'itsdangerous',
         'Jinja2',
         'MarkupSafe',
+        'marshmallow',
         'psycopg2-binary',
         'pytest',
         'pytz',

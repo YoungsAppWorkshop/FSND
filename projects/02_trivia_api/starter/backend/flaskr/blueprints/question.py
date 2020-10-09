@@ -1,10 +1,13 @@
+import json
 from flask import abort, Blueprint, request
-from flaskr.models.exceptions import ParamsOutOfRange
+from marshmallow import ValidationError
+
 
 from ..constants import QUESTIONS_PER_PAGE
-from ..models import Category, Question
-from ..setup_db import db
+from ..models import Category, Question, ParamsOutOfRange
+from ..schemas import QuestionSchema
 from ..utils import aggregate_categories, generate_response
+from ..setup_db import db
 
 bp = Blueprint("question", __name__)
 
@@ -90,6 +93,27 @@ def questions_by_category(category_id):
     finally:
         db.session.close()
     return generate_response(data=data)
+
+
+@bp.route("/questions", methods=['POST'])
+def add_a_new_question():
+    '''POST endpoint to add a question
+        - Request Body: question, answer, difficulty, category
+        - Returns: A new question
+    '''
+    try:
+        req_body = json.loads(request.data)
+        new_question = QuestionSchema().load(req_body)
+        db.session.add(new_question)
+        db.session.commit()
+        data = {'question': QuestionSchema().dump(new_question)}
+    except ValidationError:
+        abort(422)
+    except:
+        abort(500)
+    finally:
+        db.session.close()
+    return generate_response(data=data, status=201)
 
 
 '''

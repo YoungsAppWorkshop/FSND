@@ -95,3 +95,16 @@ class QuestionTestCase(TriviaTestCase):
 
         self.assertEqual(res.status_code, 422)
         self.assertEqual(payload['message'], 'Unprocessable Entity')
+
+    def test_add_a_new_question(self):
+        """Test handling POST requests to add a new question
+            :POST /questions
+        """
+        res = self.client().post('/questions', json=dict(
+            question='This is a Test Question. Is it working?',
+            answer='Yes, it is.',
+            difficulty='1',
+            category='1',
+        ))
+
+        self.assertEqual(res.status_code, 201)

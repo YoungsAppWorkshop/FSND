@@ -40,8 +40,8 @@ class QuestionTestCase(TriviaTestCase):
 
         payload = json.loads(res.data)
 
-        self.assertEqual(res.status_code, 422)
-        self.assertEqual(payload['message'], 'Unprocessable Entity')
+        self.assertEqual(res.status_code, 416)
+        self.assertEqual(payload['message'], 'Requested Range Not Satisfiable')
 
     def test_delete_question(self):
         """Test handling DELETE question request for an existing question
@@ -93,8 +93,8 @@ class QuestionTestCase(TriviaTestCase):
 
         payload = json.loads(res.data)
 
-        self.assertEqual(res.status_code, 422)
-        self.assertEqual(payload['message'], 'Unprocessable Entity')
+        self.assertEqual(res.status_code, 416)
+        self.assertEqual(payload['message'], 'Requested Range Not Satisfiable')
 
     def test_add_a_new_question(self):
         """Test handling POST requests to add a new question

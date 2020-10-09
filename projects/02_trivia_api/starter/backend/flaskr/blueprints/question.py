@@ -1,10 +1,12 @@
 import json
 from flask import abort, Blueprint, request
 from marshmallow import ValidationError
+from sqlalchemy.log import class_logger
 
 
 from ..constants import QUESTIONS_PER_PAGE
-from ..models import Category, Question, ParamsOutOfRange
+from ..exceptions import OutOfRange
+from ..models import Category, Question
 from ..schemas import QuestionSchema
 from ..utils import aggregate_categories, generate_response
 from ..setup_db import db
@@ -27,15 +29,15 @@ def questions():
         questions = Question.query.all()
 
         if start > len(questions):
-            raise ParamsOutOfRange
+            raise OutOfRange()
 
         data = {
             'questions': [q.format for q in questions[start:end]],
             'total_questions': len(questions),
             'categories': aggregate_categories(categories)
         }
-    except ParamsOutOfRange:
-        abort(422)
+    except OutOfRange:
+        abort(416)
     except:
         abort(500)
     finally:
@@ -79,15 +81,15 @@ def questions_by_category(category_id):
         questions = Question.query.filter_by(category=category_id).all()
 
         if start > len(questions):
-            raise ParamsOutOfRange
+            raise OutOfRange()
 
         data = {
             'questions': [q.format for q in questions[start:end]],
             'total_questions': len(questions),
             'current_category': category_id
         }
-    except ParamsOutOfRange:
-        abort(422)
+    except OutOfRange:
+        abort(416)
     except:
         abort(500)
     finally:

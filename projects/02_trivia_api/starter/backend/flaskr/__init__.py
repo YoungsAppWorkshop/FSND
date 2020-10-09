@@ -24,6 +24,18 @@ def create_app(test_config=None):
         return response
 
     # Error Handlers
+    @app.errorhandler(400)
+    def bad_request(error):
+        return generate_response(400, 'Bad Request')
+
+    @app.errorhandler(404)
+    def not_found(error):
+        return generate_response(404, 'Not Found')
+
+    @app.errorhandler(416)
+    def out_of_range(error):
+        return generate_response(416, 'Requested Range Not Satisfiable')
+
     @app.errorhandler(422)
     def unprocessable(error):
         return generate_response(422, 'Unprocessable Entity')

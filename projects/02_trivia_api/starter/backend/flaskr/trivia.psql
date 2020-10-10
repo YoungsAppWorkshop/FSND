@@ -21,7 +21,7 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
--- Name: categories; Type: TABLE; Schema: public; Owner: young
+-- Name: categories; Type: TABLE; Schema: public; Owner: caren
 --
 
 CREATE TABLE public.categories (
@@ -30,10 +30,10 @@ CREATE TABLE public.categories (
 );
 
 
-ALTER TABLE public.categories OWNER TO young;
+ALTER TABLE public.categories OWNER TO caren;
 
 --
--- Name: categories_id_seq; Type: SEQUENCE; Schema: public; Owner: young
+-- Name: categories_id_seq; Type: SEQUENCE; Schema: public; Owner: caren
 --
 
 CREATE SEQUENCE public.categories_id_seq
@@ -45,17 +45,17 @@ CREATE SEQUENCE public.categories_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.categories_id_seq OWNER TO young;
+ALTER TABLE public.categories_id_seq OWNER TO caren;
 
 --
--- Name: categories_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: young
+-- Name: categories_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: caren
 --
 
 ALTER SEQUENCE public.categories_id_seq OWNED BY public.categories.id;
 
 
 --
--- Name: questions; Type: TABLE; Schema: public; Owner: young
+-- Name: questions; Type: TABLE; Schema: public; Owner: caren
 --
 
 CREATE TABLE public.questions (
@@ -67,10 +67,10 @@ CREATE TABLE public.questions (
 );
 
 
-ALTER TABLE public.questions OWNER TO young;
+ALTER TABLE public.questions OWNER TO caren;
 
 --
--- Name: questions_id_seq; Type: SEQUENCE; Schema: public; Owner: young
+-- Name: questions_id_seq; Type: SEQUENCE; Schema: public; Owner: caren
 --
 
 CREATE SEQUENCE public.questions_id_seq
@@ -82,31 +82,31 @@ CREATE SEQUENCE public.questions_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.questions_id_seq OWNER TO young;
+ALTER TABLE public.questions_id_seq OWNER TO caren;
 
 --
--- Name: questions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: young
+-- Name: questions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: caren
 --
 
 ALTER SEQUENCE public.questions_id_seq OWNED BY public.questions.id;
 
 
 --
--- Name: categories id; Type: DEFAULT; Schema: public; Owner: young
+-- Name: categories id; Type: DEFAULT; Schema: public; Owner: caren
 --
 
 ALTER TABLE ONLY public.categories ALTER COLUMN id SET DEFAULT nextval('public.categories_id_seq'::regclass);
 
 
 --
--- Name: questions id; Type: DEFAULT; Schema: public; Owner: young
+-- Name: questions id; Type: DEFAULT; Schema: public; Owner: caren
 --
 
 ALTER TABLE ONLY public.questions ALTER COLUMN id SET DEFAULT nextval('public.questions_id_seq'::regclass);
 
 
 --
--- Data for Name: categories; Type: TABLE DATA; Schema: public; Owner: young
+-- Data for Name: categories; Type: TABLE DATA; Schema: public; Owner: caren
 --
 
 COPY public.categories (id, type) FROM stdin;
@@ -120,7 +120,7 @@ COPY public.categories (id, type) FROM stdin;
 
 
 --
--- Data for Name: questions; Type: TABLE DATA; Schema: public; Owner: young
+-- Data for Name: questions; Type: TABLE DATA; Schema: public; Owner: caren
 --
 
 COPY public.questions (id, question, answer, difficulty, category) FROM stdin;
@@ -128,7 +128,7 @@ COPY public.questions (id, question, answer, difficulty, category) FROM stdin;
 9	What boxer's original name is Cassius Clay?	Muhammad Ali	1	4
 2	What movie earned Tom Hanks his third straight Oscar nomination, in 1996?	Apollo 13	4	5
 4	What actor did author Anne Rice first denounce, then praise in the role of her beloved Lestat?	Tom Cruise	4	5
-6	What was the title of the 1990 fantasy directed by Tim Burton about a young man with multi-bladed appendages?	Edward Scissorhands	3	5
+6	What was the title of the 1990 fantasy directed by Tim Burton about a caren man with multi-bladed appendages?	Edward Scissorhands	3	5
 10	Which is the only team to play in every soccer World Cup tournament?	Brazil	3	6
 11	Which country won the first ever soccer World Cup in 1930?	Uruguay	4	6
 12	Who invented Peanut Butter?	George Washington Carver	2	4
@@ -147,21 +147,21 @@ COPY public.questions (id, question, answer, difficulty, category) FROM stdin;
 
 
 --
--- Name: categories_id_seq; Type: SEQUENCE SET; Schema: public; Owner: young
+-- Name: categories_id_seq; Type: SEQUENCE SET; Schema: public; Owner: caren
 --
 
 SELECT pg_catalog.setval('public.categories_id_seq', 6, true);
 
 
 --
--- Name: questions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: young
+-- Name: questions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: caren
 --
 
 SELECT pg_catalog.setval('public.questions_id_seq', 23, true);
 
 
 --
--- Name: categories categories_pkey; Type: CONSTRAINT; Schema: public; Owner: young
+-- Name: categories categories_pkey; Type: CONSTRAINT; Schema: public; Owner: caren
 --
 
 ALTER TABLE ONLY public.categories
@@ -169,7 +169,7 @@ ALTER TABLE ONLY public.categories
 
 
 --
--- Name: questions questions_pkey; Type: CONSTRAINT; Schema: public; Owner: young
+-- Name: questions questions_pkey; Type: CONSTRAINT; Schema: public; Owner: caren
 --
 
 ALTER TABLE ONLY public.questions
@@ -177,7 +177,7 @@ ALTER TABLE ONLY public.questions
 
 
 --
--- Name: questions category; Type: FK CONSTRAINT; Schema: public; Owner: young
+-- Name: questions category; Type: FK CONSTRAINT; Schema: public; Owner: caren
 --
 
 ALTER TABLE ONLY public.questions

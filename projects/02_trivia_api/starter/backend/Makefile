@@ -2,13 +2,19 @@
 FLASK_APP=flaskr
 FLASK_ENV=development
 
-debug:
-	flask run
+init:
+	psql trivia < flaskr/trivia.psql
+
+install:
+	pip install -e .
 
 reset:
 	dropdb trivia_test
 	createdb trivia_test
 	psql trivia_test < flaskr/trivia.psql
+
+run:
+	flask run
 
 test: reset
 	pytest

@@ -26,7 +26,7 @@ class QuizView extends Component {
       url: `${API_URL}/categories`,
       type: 'GET',
       success: (result) => {
-        this.setState({ categories: result.categories })
+        this.setState({ categories: result.data.categories })
         return
       },
       error: (error) => {
@@ -67,9 +67,9 @@ class QuizView extends Component {
         this.setState({
           showAnswer: false,
           previousQuestions: previousQuestions,
-          currentQuestion: result.question,
+          currentQuestion: result.data.question,
           guess: '',
-          forceEnd: result.question ? false : true,
+          forceEnd: result.data.question ? false : true,
         })
         return
       },

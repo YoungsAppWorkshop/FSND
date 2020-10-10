@@ -49,8 +49,9 @@ def create_app(test_config=None):
         return generate_response(500, 'Internal Server Error')
 
     # Register Blueprints
-    from .blueprints import category, question
+    from .blueprints import category, question, quiz
     app.register_blueprint(category.bp)
     app.register_blueprint(question.bp)
+    app.register_blueprint(quiz.bp)
 
     return app

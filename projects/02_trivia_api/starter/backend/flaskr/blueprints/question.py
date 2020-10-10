@@ -1,8 +1,6 @@
 import json
 from flask import abort, Blueprint, request
 from marshmallow import ValidationError
-from sqlalchemy.log import class_logger
-
 
 from ..constants import QUESTIONS_PER_PAGE
 from ..exceptions import OutOfRange
@@ -145,16 +143,3 @@ def search_questions(keyword: str):
     finally:
         db.session.close()
     return generate_response(data=data, status=200)
-
-
-'''
-@TODO:
-Create a POST endpoint to get questions to play the quiz.
-This endpoint should take category and previous question parameters
-and return a random questions within the given category,
-if provided, and that is not one of the previous questions.
-
-TEST: In the "Play" tab, after a user selects "All" or a category,
-one question at a time is displayed, the user is allowed to answer
-and shown whether they were correct or not.
-'''

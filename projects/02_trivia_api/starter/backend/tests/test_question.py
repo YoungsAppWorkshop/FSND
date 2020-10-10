@@ -119,3 +119,13 @@ class QuestionTestCase(TriviaTestCase):
         ))
 
         self.assertEqual(res.status_code, 400)
+
+    def test_search_questions(self):
+        """Test to search questions containing some keywords
+            :POST /questions
+        """
+        res = self.client().post('/questions', json=dict(
+            searchTerm='title',
+        ))
+
+        self.assertEqual(res.status_code, 200)

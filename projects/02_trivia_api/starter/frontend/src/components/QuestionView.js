@@ -97,9 +97,9 @@ class QuestionView extends Component {
       crossDomain: true,
       success: (result) => {
         this.setState({
-          questions: result.questions,
-          totalQuestions: result.total_questions,
-          currentCategory: result.current_category,
+          questions: result.data.questions,
+          totalQuestions: result.data.total_questions,
+          currentCategory: result.data.current_category,
         })
         return
       },

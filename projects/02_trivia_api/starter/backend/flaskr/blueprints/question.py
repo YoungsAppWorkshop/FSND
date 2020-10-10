@@ -98,17 +98,29 @@ def questions_by_category(category_id):
 
 
 @bp.route("/questions", methods=['POST'])
-def add_a_new_question():
-    '''POST endpoint to add a question
-        - Request Body: question, answer, difficulty, category
+def add_or_search_questions():
+    '''POST endpoint to add or search questions
+        - Request Params
+            - searchTerm: Search and return questions containing the search term
+            - question, answer, difficulty, category: Add a new question
+    '''
+    req_body = json.loads(request.data)
+    search_term = req_body.get('searchTerm')
+    if search_term is not None:
+        return search_questions(search_term)
+    return add_a_new_question(req_body)
+
+
+def add_a_new_question(payload):
+    '''Add a new question
+        - Payload: A dict containing question, answer, difficulty, category field
         - Returns: A new question
     '''
     try:
-        req_body = json.loads(request.data)
-        new_question = QuestionSchema().load(req_body)
+        new_question = QuestionSchema().load(payload)
         db.session.add(new_question)
         db.session.commit()
-        data = {'question': QuestionSchema().dump(new_question)}
+        data = {'question': new_question.format}
     except ValidationError:
         abort(400)
     except:
@@ -118,16 +130,21 @@ def add_a_new_question():
     return generate_response(data=data, status=201)
 
 
-'''
-@TODO:
-Create a POST endpoint to get questions based on a search term.
-It should return any questions for whom the search term
-is a substring of the question.
-
-TEST: Search by any phrase. The questions list will update to include
-only question that include that string within their question.
-Try using the word "title" to start.
-'''
+def search_questions(keyword: str):
+    '''Search and return the questions which contain keywords
+    '''
+    try:
+        questions = Question.query.filter(
+            Question.question.ilike(f'%{keyword}%')).all()
+        data = {
+            'questions': [q.format for q in questions],
+            'totalQuestions': len(questions),
+        }
+    except:
+        abort(500)
+    finally:
+        db.session.close()
+    return generate_response(data=data, status=200)
 
 
 '''

@@ -36,6 +36,10 @@ def create_app(test_config=None):
     def not_found(error):
         return generate_response(404, 'Not Found')
 
+    @app.errorhandler(405)
+    def method_not_allowed(error):
+        return generate_response(405, 'Method Not Allowed')
+
     @app.errorhandler(416)
     def out_of_range(error):
         return generate_response(416, 'Requested Range Not Satisfiable')

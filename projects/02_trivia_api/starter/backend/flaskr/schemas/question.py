@@ -6,7 +6,7 @@ from ..models.question import Question
 class QuestionSchema(Schema):
     question = fields.Str()
     answer = fields.Str()
-    category = fields.Str()
+    category = fields.Int()
     difficulty = fields.Int()
 
     @post_load

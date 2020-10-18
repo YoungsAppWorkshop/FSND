@@ -17,18 +17,27 @@ def questions():
         - Request Arguments: category, previous questions
         - Returns: A random question
     '''
-    req_body = json.loads(request.data)
-    previous_questions = req_body.get('previous_questions')
-    quiz_category = req_body.get('quiz_category')
+    try:
+        req_body = json.loads(request.data)
+        previous_questions = req_body.get('previous_questions')
+        quiz_category = req_body.get('quiz_category')['id']
+    except Exception:
+        abort(400)
+
+    queries = []
+    if quiz_category != 0:
+        queries.append(Question.category == quiz_category)
+    queries.append(not_(Question.id.in_(previous_questions)))
 
     try:
-        question = Question.query.filter_by(category=quiz_category['id']).filter(
-            not_(Question.id.in_(previous_questions))).order_by(func.random()).first()
-
+        question = Question.query.filter(
+            *queries).order_by(func.random()).first()
         data = {
             'question': question.format,
         }
-    except:
+    except AttributeError:
+        data = {}
+    except Exception:
         abort(500)
     finally:
         db.session.close()

@@ -128,4 +128,89 @@ class QuestionTestCase(TriviaTestCase):
             searchTerm='title',
         ))
 
+        payload = json.loads(res.data)
+        expected = {
+            "data": {
+                "questions": [
+                    {
+                        "answer": "Maya Angelou",
+                        "category": 4,
+                        "difficulty": 2,
+                        "id": 5,
+                        "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+                    },
+                    {
+                        "answer": "Edward Scissorhands",
+                        "category": 5,
+                        "difficulty": 3,
+                        "id": 6,
+                        "question": "What was the title of the 1990 fantasy directed by Tim Burton about a young man with multi-bladed appendages?"
+                    }
+                ],
+                "totalQuestions": 2
+            },
+            "message": "OK",
+            "status": 200
+        }
+
         self.assertEqual(res.status_code, 200)
+        self.assertEqual(payload, expected)
+
+    def test_search_questions_using_wrong_keyword(self):
+        """Test to search questions returns empty result
+            :POST /questions
+        """
+        WRONG_KEYWORD = 'abkehui'
+        res = self.client().post('/questions', json=dict(
+            searchTerm=WRONG_KEYWORD,
+        ))
+
+        payload = json.loads(res.data)
+        expected = {
+            "data": {
+                "questions": [],
+                "totalQuestions": 0
+            },
+            "message": "OK",
+            "status": 200
+        }
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(payload, expected)
+
+    def test_search_questions_using_wrong_path(self):
+        """Test making API request to wrong path returns 404 Error
+            :POST /questions
+        """
+        WRONG_PATH = '/question'
+        res = self.client().post(WRONG_PATH, json=dict(
+            searchTerm='title',
+        ))
+
+        payload = json.loads(res.data)
+        expected = {
+            'data': {},
+            'message': 'Not Found',
+            'status': 404,
+        }
+
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(payload, expected)
+
+    def test_search_questions_using_wrong_method(self):
+        """Test making API request with wrong HTTP method returns 405 Error
+            :POST /questions
+        """
+        res = self.client().put('/questions', json=dict(
+            searchTerm='title',
+        ))
+
+        payload = json.loads(res.data)
+        expected = {
+            'data': {},
+            'message': 'Method Not Allowed',
+            'status': 405,
+        }
+
+        self.assertEqual(res.status_code, 405)
+        self.assertEqual(payload, expected)
